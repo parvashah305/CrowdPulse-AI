@@ -13,6 +13,7 @@ from pyspark.sql.types import (
     FloatType, IntegerType, ArrayType, TimestampType
 )
 from pymongo import MongoClient
+import certifi
 from config import (
     KAFKA_BOOTSTRAP_SERVERS, MONGODB_URI, MONGODB_DB,
     TOPIC_RAW, TOPIC_PROCESSED, TOPIC_ALERTS,
@@ -89,7 +90,7 @@ def write_raw_to_mongo(batch_df, batch_id):
     if not rows:
         return
 
-    client = MongoClient(MONGODB_URI)
+    client = MongoClient(MONGODB_URI, tlsCAFile=certifi.where())
     db     = client[MONGODB_DB]
 
     docs = []
@@ -119,7 +120,7 @@ def process_window(batch_df, batch_id):
     if not rows:
         return
 
-    client = MongoClient(MONGODB_URI)
+    client = MongoClient(MONGODB_URI, tlsCAFile=certifi.where())
     db     = client[MONGODB_DB]
 
     insights = []
